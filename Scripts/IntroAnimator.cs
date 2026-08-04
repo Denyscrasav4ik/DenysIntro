@@ -76,6 +76,7 @@ public partial class IntroAnimator : Node
 
     private int _audioBusIndex = 0;
     private bool _hasFlashed = false;
+    private bool _isFadingOut = false;
 
     public override void _Ready()
     {
@@ -170,18 +171,47 @@ public partial class IntroAnimator : Node
 
     public override void _Process(double delta)
     {
-        if (!_hasFlashed && AudioPlayer.Playing)
+        if (AudioPlayer.Playing)
         {
-            float peakLeft = AudioServer.GetBusPeakVolumeLeftDb(_audioBusIndex, 0);
-            float peakRight = AudioServer.GetBusPeakVolumeRightDb(_audioBusIndex, 0);
-            float currentDb = Mathf.Max(peakLeft, peakRight);
-
-            if (currentDb >= PeakDbThreshold)
+            if (!_hasFlashed)
             {
-                TriggerImpactOnAllSprites();
+                float peakLeft = AudioServer.GetBusPeakVolumeLeftDb(_audioBusIndex, 0);
+                float peakRight = AudioServer.GetBusPeakVolumeRightDb(_audioBusIndex, 0);
+                float currentDb = Mathf.Max(peakLeft, peakRight);
+
+                if (currentDb >= PeakDbThreshold)
+                {
+                    TriggerImpactOnAllSprites();
+                }
+            }
+
+            if (!_isFadingOut)
+            {
+                float streamLength = (float)AudioPlayer.Stream.GetLength();
+                float currentPosition = AudioPlayer.GetPlaybackPosition();
+
+                if (streamLength > 0f && (streamLength - currentPosition) <= 1.0f)
+                {
+                    TriggerFadeOut();
+                }
             }
         }
+
         ApplyCombinedTransforms();
+    }
+
+    private void TriggerFadeOut()
+    {
+        _isFadingOut = true;
+
+        _flashTween?.Kill();
+
+        FlashOverlay.SelfModulate = Colors.Black;
+
+        _flashTween = CreateTween();
+        _flashTween.TweenProperty(FlashOverlay, "modulate:a", 1.0f, 1.0f)
+                   .SetEase(Tween.EaseType.In)
+                   .SetTrans(Tween.TransitionType.Quad);
     }
 
     private void AnimateLabelIn()

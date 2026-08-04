@@ -149,7 +149,7 @@ horizontal_alignment = 1
 
 [node name="WhiteFlash" type="ColorRect" parent="." unique_id=52397339]
 offset_right = 1920.0
-offset_bottom = 1080.0
+offset_bottom = 1081.0
 
 [node name="LogoAnimator" type="Node" parent="." unique_id=1759837934 node_paths=PackedStringArray("TargetSprites", "AudioPlayer", "FlashOverlay", "MusicLabel", "DayLabel", "TitleLabel")]
 script = ExtResource("3_gndc5")
