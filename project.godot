@@ -18,7 +18,7 @@ boot_splash/use_filter=false
 
 [audio]
 
-buses/default_bus_layout="uid://bfgnembv1hquq"
+buses/default_bus_layout=""
 
 [display]
 
