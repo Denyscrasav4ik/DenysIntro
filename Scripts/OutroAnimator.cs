@@ -177,7 +177,13 @@ public partial class OutroAnimator : Node
         FlashOverlay.SelfModulate = Colors.Black;
 
         _flashTween = CreateTween();
+        _flashTween.SetParallel(true);
+
         _flashTween.TweenProperty(FlashOverlay, "modulate:a", 1.0f, 1.0f)
+                   .SetEase(Tween.EaseType.In)
+                   .SetTrans(Tween.TransitionType.Quad);
+
+        _flashTween.TweenProperty(AudioPlayer, "volume_db", -80.0f, 1.0f)
                    .SetEase(Tween.EaseType.In)
                    .SetTrans(Tween.TransitionType.Quad);
     }
