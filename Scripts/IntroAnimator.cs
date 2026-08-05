@@ -95,37 +95,31 @@ public partial class IntroAnimator : Node
         _labelOriginalModulate = MusicLabel.Modulate;
         _labelBaseModulate = MusicLabel.Modulate;
 
-        if (DayLabel != null)
-        {
-            _dayLabelOriginalPos = DayLabel.Position;
-            _dayLabelOriginalModulate = DayLabel.Modulate;
+        _dayLabelOriginalPos = DayLabel.Position;
+        _dayLabelOriginalModulate = DayLabel.Modulate;
 
-            Vector2 startPos = _dayLabelOriginalPos;
-            bool fromLeft = _rng.RandiRange(0, 1) == 0;
-            startPos.X += fromLeft ? -OffscreenDistance : OffscreenDistance;
+        Vector2 dayStartPos = _dayLabelOriginalPos;
+        bool dayFromLeft = _rng.RandiRange(0, 1) == 0;
+        dayStartPos.X += dayFromLeft ? -OffscreenDistance : OffscreenDistance;
 
-            Color startColor = _dayLabelOriginalModulate;
-            startColor.A = 0f;
+        Color dayStartColor = _dayLabelOriginalModulate;
+        dayStartColor.A = 0f;
 
-            _dayLabelBasePos = startPos;
-            _dayLabelBaseModulate = startColor;
-        }
+        _dayLabelBasePos = dayStartPos;
+        _dayLabelBaseModulate = dayStartColor;
 
-        if (TitleLabel != null)
-        {
-            _titleLabelOriginalPos = TitleLabel.Position;
-            _titleLabelOriginalModulate = TitleLabel.Modulate;
+        _titleLabelOriginalPos = TitleLabel.Position;
+        _titleLabelOriginalModulate = TitleLabel.Modulate;
 
-            Vector2 startPos = _titleLabelOriginalPos;
-            bool fromLeft = _rng.RandiRange(0, 1) == 0;
-            startPos.X += fromLeft ? -OffscreenDistance : OffscreenDistance;
+        Vector2 titleStartPos = _titleLabelOriginalPos;
+        bool titleFromLeft = _rng.RandiRange(0, 1) == 0;
+        titleStartPos.X += titleFromLeft ? -OffscreenDistance : OffscreenDistance;
 
-            Color startColor = _titleLabelOriginalModulate;
-            startColor.A = 0f;
+        Color titleStartColor = _titleLabelOriginalModulate;
+        titleStartColor.A = 0f;
 
-            _titleLabelBasePos = startPos;
-            _titleLabelBaseModulate = startColor;
-        }
+        _titleLabelBasePos = titleStartPos;
+        _titleLabelBaseModulate = titleStartColor;
 
         AnimateLabelIn();
 
@@ -167,6 +161,10 @@ public partial class IntroAnimator : Node
         _audioBusIndex = AudioServer.GetBusIndex(AudioPlayer.Bus);
         AudioPlayer.Finished += OnAudioFinished;
         AudioPlayer.Play();
+
+        AudioVisualizer visualizer = new AudioVisualizer() { AudioPlayer = AudioPlayer };
+        visualizer.ZIndex = 0;
+        AddChild(visualizer);
     }
 
     public override void _Process(double delta)
@@ -376,17 +374,11 @@ public partial class IntroAnimator : Node
         MusicLabel.Position = _labelBasePosition;
         MusicLabel.Modulate = _labelBaseModulate;
 
-        if (DayLabel != null)
-        {
-            DayLabel.Position = _dayLabelBasePos;
-            DayLabel.Modulate = _dayLabelBaseModulate;
-        }
+        DayLabel.Position = _dayLabelBasePos;
+        DayLabel.Modulate = _dayLabelBaseModulate;
 
-        if (TitleLabel != null)
-        {
-            TitleLabel.Position = _titleLabelBasePos;
-            TitleLabel.Modulate = _titleLabelBaseModulate;
-        }
+        TitleLabel.Position = _titleLabelBasePos;
+        TitleLabel.Modulate = _titleLabelBaseModulate;
     }
 
     private void TriggerFlash()
@@ -594,11 +586,8 @@ public partial class IntroAnimator : Node
             bgSprite.Rotation = baseTr0.Rotation;
 
             Vector2 targetScale = baseTr0.Scale;
-            if (NewTitleTexture != null)
-            {
-                Vector2 texSize = NewTitleTexture.GetSize();
-                targetScale = new Vector2(1280f / texSize.X, 720f / texSize.Y);
-            }
+            Vector2 texSize = NewTitleTexture.GetSize();
+            targetScale = new Vector2(1280f / texSize.X, 720f / texSize.Y);
             bgSprite.Scale = targetScale;
 
             Color bgStartColor = baseTr0.Modulate;
@@ -645,5 +634,103 @@ public partial class IntroAnimator : Node
     private void OnAudioFinished()
     {
         GetTree().Quit();
+    }
+
+    public partial class AudioVisualizer : Control
+    {
+        [Export]
+        public AudioStreamPlayer AudioPlayer { get; set; } = default!;
+
+        private int _busIndex = 0;
+        private AudioEffectSpectrumAnalyzerInstance? _spectrumInstance;
+        private const int BarCount = 128;
+        private float[] _barHeights = new float[BarCount];
+        private RandomNumberGenerator _rng = new();
+
+        public override void _Ready()
+        {
+            _rng.Randomize();
+            AnchorLeft = 0f;
+            AnchorRight = 1f;
+            AnchorTop = 1f;
+            AnchorBottom = 1f;
+            OffsetTop = -300f;
+            OffsetBottom = 0f;
+            OffsetLeft = 0f;
+            OffsetRight = 0f;
+            MouseFilter = MouseFilterEnum.Ignore;
+
+            _busIndex = AudioServer.GetBusIndex(AudioPlayer.Bus);
+
+            bool hasSpectrum = false;
+            int effectCount = AudioServer.GetBusEffectCount(_busIndex);
+            for (int i = 0; i < effectCount; i++)
+            {
+                if (AudioServer.GetBusEffect(_busIndex, i) is AudioEffectSpectrumAnalyzer)
+                {
+                    _spectrumInstance = (AudioEffectSpectrumAnalyzerInstance)AudioServer.GetBusEffectInstance(_busIndex, i);
+                    hasSpectrum = true;
+                    break;
+                }
+            }
+
+            if (!hasSpectrum)
+            {
+                var spectrumEffect = new AudioEffectSpectrumAnalyzer();
+                AudioServer.AddBusEffect(_busIndex, spectrumEffect);
+                _spectrumInstance = (AudioEffectSpectrumAnalyzerInstance)AudioServer.GetBusEffectInstance(_busIndex, effectCount);
+            }
+        }
+
+        public override void _Process(double delta)
+        {
+            if (AudioPlayer.Playing && _spectrumInstance != null)
+            {
+                float minFreq = 0f;
+                float maxFreq = 10000f;
+                float freqRange = (maxFreq - minFreq) / BarCount;
+
+                for (int i = 0; i < BarCount; i++)
+                {
+                    float f1 = minFreq + i * freqRange;
+                    float f2 = f1 + freqRange;
+                    var magnitude = _spectrumInstance.GetMagnitudeForFrequencyRange(f1, f2);
+
+                    float energy = Mathf.Clamp((60.0f + Mathf.LinearToDb(magnitude.Length())) / 60.0f, 0.0f, 1.0f);
+                    _barHeights[i] = Mathf.Lerp(_barHeights[i], energy, (float)(delta * 15.0f));
+                }
+            }
+            else
+            {
+                for (int i = 0; i < BarCount; i++)
+                {
+                    float target = AudioPlayer.Playing ? _rng.RandfRange(0.1f, 0.3f) : 0f;
+                    _barHeights[i] = Mathf.Lerp(_barHeights[i], target, (float)(delta * 5.0f));
+                }
+            }
+
+            QueueRedraw();
+        }
+
+        public override void _Draw()
+        {
+            Vector2 size = Size;
+            if (size.X <= 0 || size.Y <= 0) return;
+
+            float barWidth = size.X / BarCount;
+            float spacing = 3f;
+
+            Color barColor = new Color(0.48f, 0.2f, 0.8f, 0.5f);
+
+            for (int i = 0; i < BarCount; i++)
+            {
+                float h = _barHeights[i] * size.Y * 1.3f;
+                float x = i * barWidth + spacing * 0.5f;
+                float w = Mathf.Max(1f, barWidth - spacing);
+                float y = size.Y - h;
+
+                DrawRect(new Rect2(x, y, w, h), barColor);
+            }
+        }
     }
 }

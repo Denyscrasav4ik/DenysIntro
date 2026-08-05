@@ -11,7 +11,6 @@ config_version=5
 [application]
 
 config/name="DenysIntro"
-run/main_scene="uid://bxkpvcfcm5sld"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 boot_splash/show_image=false
 boot_splash/use_filter=false

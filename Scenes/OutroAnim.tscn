@@ -1,0 +1,170 @@
+[gd_scene format=3 uid="uid://d235vrje82nav"]
+
+[ext_resource type="Shader" uid="uid://bxtmnnt17r2nx" path="res://Shaders/BGAnim.gdshader" id="1_xti3p"]
+[ext_resource type="AudioStream" uid="uid://dl2fgcid2ptqi" path="res://Audio/MenuOutro.wav" id="2_xti3p"]
+[ext_resource type="Script" uid="uid://boc2if7oh8f0c" path="res://Scripts/OutroAnimator.cs" id="3_owav6"]
+[ext_resource type="Shader" uid="uid://bb4c1w44on6bb" path="res://Shaders/DropShadow.gdshader" id="3_r1van"]
+[ext_resource type="Texture2D" uid="uid://wpgcabuc2tj7" path="res://Sprites/LogoBG.png" id="4_wqq43"]
+[ext_resource type="Texture2D" uid="uid://b84m0htm7j0ty" path="res://Sprites/Logo1.png" id="5_f1qbt"]
+[ext_resource type="Texture2D" uid="uid://c2p3lxhbq2g0d" path="res://Sprites/Logo2.png" id="6_8y03e"]
+[ext_resource type="Texture2D" uid="uid://dxa1vg4r53qx8" path="res://Sprites/Logo3.png" id="7_tk54p"]
+[ext_resource type="Texture2D" uid="uid://cd0s57jq7khvc" path="res://Sprites/Logo4.png" id="8_hpjy7"]
+[ext_resource type="FontFile" uid="uid://dsbsbs2o1lbt8" path="res://Fonts/comic-bald.otf" id="9_ctpba"]
+[ext_resource type="Texture2D" uid="uid://6mi4vucutvp1" path="res://Sprites/LogoBG_Circle.png" id="9_n8u4e"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qntgk"]
+shader = ExtResource("1_xti3p")
+shader_parameter/dark_purple = Color(0.12, 0.05, 0.2, 1)
+shader_parameter/light_purple = Color(0.22, 0.1, 0.35, 1)
+shader_parameter/grid_size = 64.0
+shader_parameter/scroll_speed_x = 100.00000475
+shader_parameter/vertical_amplitude = 200.0
+shader_parameter/vertical_frequency = 0.50000002049012
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xti3p"]
+shader = ExtResource("3_r1van")
+shader_parameter/drop_shadow_color = Color(0, 0, 0, 0.5)
+shader_parameter/shadow_direction = Vector2(-1, 1)
+shader_parameter/shadow_length = 15.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g4nx1"]
+shader = ExtResource("3_r1van")
+shader_parameter/drop_shadow_color = Color(0, 0, 0, 0.5)
+shader_parameter/shadow_direction = Vector2(-1, 1)
+shader_parameter/shadow_length = 15.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r1van"]
+shader = ExtResource("3_r1van")
+shader_parameter/drop_shadow_color = Color(0, 0, 0, 0.5)
+shader_parameter/shadow_direction = Vector2(-1, 1)
+shader_parameter/shadow_length = 15.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wqq43"]
+shader = ExtResource("3_r1van")
+shader_parameter/drop_shadow_color = Color(0, 0, 0, 0.5)
+shader_parameter/shadow_direction = Vector2(-1, 1)
+shader_parameter/shadow_length = 15.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_f1qbt"]
+shader = ExtResource("3_r1van")
+shader_parameter/drop_shadow_color = Color(0, 0, 0, 0.5)
+shader_parameter/shadow_direction = Vector2(-1, 1)
+shader_parameter/shadow_length = 15.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tu7it"]
+shader = ExtResource("3_r1van")
+shader_parameter/drop_shadow_color = Color(0, 0, 0, 0.5)
+shader_parameter/shadow_direction = Vector2(-1, 1)
+shader_parameter/shadow_length = 15.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n8u4e"]
+shader = ExtResource("3_r1van")
+shader_parameter/drop_shadow_color = Color(0, 0, 0, 0.5)
+shader_parameter/shadow_direction = Vector2(-1, 1)
+shader_parameter/shadow_length = 15.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_qntgk"]
+font = ExtResource("9_ctpba")
+font_size = 24
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+shadow_color = Color(0, 0, 0, 0.49019608)
+shadow_offset = Vector2(-5, 5)
+
+[node name="Anim" type="Node2D" unique_id=541000413]
+
+[node name="OutroAnimator" type="Node" parent="." unique_id=1759837934 node_paths=PackedStringArray("TargetSprites", "AudioPlayer", "FlashOverlay", "MusicLabel", "VideoBg1", "VideoBg2", "LogoBgCircle")]
+script = ExtResource("3_owav6")
+TargetSprites = [NodePath("../LogoBg"), NodePath("../Logo1"), NodePath("../Logo2"), NodePath("../Logo3"), NodePath("../Logo4")]
+AudioPlayer = NodePath("../MenuOutro")
+FlashOverlay = NodePath("../WhiteFlash")
+MusicLabel = NodePath("../MusicLabel")
+VideoBg1 = NodePath("../VideoBg1")
+VideoBg2 = NodePath("../VideoBg2")
+LogoBgCircle = NodePath("../LogoBgCircle")
+
+[node name="ScrollingBG" type="ColorRect" parent="." unique_id=1933661188]
+z_index = -1
+material = SubResource("ShaderMaterial_qntgk")
+offset_top = 1.0
+offset_right = 1920.0
+offset_bottom = 1081.0
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1269126775]
+z_index = 1
+position = Vector2(960, 541)
+
+[node name="MenuOutro" type="AudioStreamPlayer" parent="." unique_id=1874027681]
+stream = ExtResource("2_xti3p")
+
+[node name="LogoBg" type="Sprite2D" parent="." unique_id=163372017]
+z_index = 1
+material = SubResource("ShaderMaterial_xti3p")
+position = Vector2(963, 665.5)
+scale = Vector2(3.5156252, 2.2301583)
+texture = ExtResource("4_wqq43")
+
+[node name="Logo1" type="Sprite2D" parent="." unique_id=65564512]
+z_index = 1
+material = SubResource("ShaderMaterial_g4nx1")
+position = Vector2(830, 397.99997)
+rotation = -0.61086524
+scale = Vector2(1.5127186, 1.5127184)
+texture = ExtResource("5_f1qbt")
+
+[node name="Logo2" type="Sprite2D" parent="." unique_id=1924150836]
+z_index = 1
+material = SubResource("ShaderMaterial_r1van")
+position = Vector2(1081.0001, 465)
+scale = Vector2(1.5111939, 1.5111939)
+texture = ExtResource("6_8y03e")
+
+[node name="Logo3" type="Sprite2D" parent="." unique_id=834152597]
+z_index = 1
+material = SubResource("ShaderMaterial_wqq43")
+position = Vector2(961, 611)
+scale = Vector2(1.4892472, 1.4892473)
+texture = ExtResource("7_tk54p")
+
+[node name="Logo4" type="Sprite2D" parent="." unique_id=1395209139]
+z_index = 1
+material = SubResource("ShaderMaterial_f1qbt")
+position = Vector2(958.7242, 744.02924)
+scale = Vector2(1.5010068, 1.5010068)
+texture = ExtResource("8_hpjy7")
+
+[node name="VideoBg1" type="Sprite2D" parent="." unique_id=1644552967]
+z_index = 1
+material = SubResource("ShaderMaterial_tu7it")
+position = Vector2(1438, 269)
+scale = Vector2(1.9537036, 2.1979165)
+texture = ExtResource("4_wqq43")
+
+[node name="VideoBg2" type="Sprite2D" parent="." unique_id=385260592]
+z_index = 1
+material = SubResource("ShaderMaterial_tu7it")
+position = Vector2(1437.9999, 813)
+scale = Vector2(1.9537036, 2.1979165)
+texture = ExtResource("4_wqq43")
+
+[node name="LogoBgCircle" type="Sprite2D" parent="." unique_id=1320278697]
+z_index = 1
+material = SubResource("ShaderMaterial_n8u4e")
+position = Vector2(960, 541)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("9_n8u4e")
+
+[node name="MusicLabel" type="Label" parent="." unique_id=535781182]
+z_index = 1
+offset_left = 1.0
+offset_top = 1022.0
+offset_right = 251.0
+offset_bottom = 1081.0
+text = "Now playing:
+BBFRR OST - New Elevator"
+label_settings = SubResource("LabelSettings_qntgk")
+
+[node name="WhiteFlash" type="ColorRect" parent="." unique_id=52397339]
+z_index = 1
+offset_right = 1920.0
+offset_bottom = 1081.0
