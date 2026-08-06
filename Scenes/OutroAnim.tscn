@@ -136,22 +136,22 @@ texture = ExtResource("8_hpjy7")
 [node name="VideoBg1" type="Sprite2D" parent="." unique_id=1644552967]
 z_index = 1
 material = SubResource("ShaderMaterial_tu7it")
-position = Vector2(1438, 269)
-scale = Vector2(1.9537036, 2.1979165)
+position = Vector2(1545.537, 304.23438)
+scale = Vector2(1.8479455, 2.3687997)
 texture = ExtResource("4_wqq43")
 
 [node name="VideoBg2" type="Sprite2D" parent="." unique_id=385260592]
 z_index = 1
 material = SubResource("ShaderMaterial_tu7it")
-position = Vector2(1437.9999, 813)
-scale = Vector2(1.9537036, 2.1979165)
+position = Vector2(1544.5371, 771.2656)
+scale = Vector2(1.840133, 2.3608632)
 texture = ExtResource("4_wqq43")
 
 [node name="LogoBgCircle" type="Sprite2D" parent="." unique_id=1320278697]
 z_index = 1
 material = SubResource("ShaderMaterial_n8u4e")
-position = Vector2(960, 541)
-scale = Vector2(2.5, 2.5)
+position = Vector2(1075, 536)
+scale = Vector2(1.8593751, 1.8593751)
 texture = ExtResource("9_n8u4e")
 
 [node name="MusicLabel" type="Label" parent="." unique_id=535781182]
