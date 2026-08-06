@@ -35,7 +35,7 @@ project/assembly_name="DenysIntro"
 [editor]
 
 movie_writer/video_quality=1.0
-movie_writer/movie_file="/home/denyscrasav4ik/Відео/Intro.avi"
+movie_writer/movie_file="/home/denyscrasav4ik/Відео/Outro.avi"
 
 [physics]
 
