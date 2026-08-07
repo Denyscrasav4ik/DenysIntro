@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://cd0s57jq7khvc" path="res://Sprites/Logo4.png" id="7_xetnn"]
 [ext_resource type="FontFile" uid="uid://dsbsbs2o1lbt8" path="res://Fonts/comic-bald.otf" id="10_xetnn"]
 [ext_resource type="Texture2D" uid="uid://b2l0qg37b01js" path="res://Sprites/ModThumbnail.png" id="11_xetnn"]
+[ext_resource type="Shader" uid="uid://b5ibn4ld5whus" path="res://Shaders/DitherFade.gdshader" id="12_nfrox"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qntgk"]
 shader = ExtResource("1_mh4nx")
@@ -74,6 +75,11 @@ outline_size = 3
 outline_color = Color(0, 0, 0, 1)
 shadow_color = Color(0, 0, 0, 0.49019608)
 shadow_offset = Vector2(-5, 5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wr1tv"]
+shader = ExtResource("12_nfrox")
+shader_parameter/progress = 0.0
+shader_parameter/dither_size = 4.0
 
 [node name="Anim" type="Node2D" unique_id=541000413]
 
@@ -161,11 +167,12 @@ z_index = 1
 offset_top = 972.0
 offset_right = 1920.0
 offset_bottom = 1062.0
-text = "No mod"
+text = "No Mod"
 label_settings = SubResource("LabelSettings_xetnn")
 horizontal_alignment = 1
 
 [node name="WhiteFlash" type="ColorRect" parent="." unique_id=52397339]
 z_index = 1
+material = SubResource("ShaderMaterial_wr1tv")
 offset_right = 1920.0
 offset_bottom = 1081.0
