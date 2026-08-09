@@ -22,6 +22,9 @@ public partial class IntroAnimator : Node
     public Control TitleLabel { get; set; } = default!;
 
     [Export]
+    public Control VersionLabel { get; set; } = default!;
+
+    [Export]
     public Texture2D NewTitleTexture { get; set; } = default!;
 
     [Export]
@@ -71,6 +74,11 @@ public partial class IntroAnimator : Node
     private Color _titleLabelOriginalModulate;
     private Color _titleLabelBaseModulate;
 
+    private Vector2 _versionLabelOriginalPos;
+    private Vector2 _versionLabelBasePos;
+    private Color _versionLabelOriginalModulate;
+    private Color _versionLabelBaseModulate;
+
     private Tween? _flashTween;
     private RandomNumberGenerator _rng = new();
 
@@ -99,29 +107,33 @@ public partial class IntroAnimator : Node
 
         _dayLabelOriginalPos = DayLabel.Position;
         _dayLabelOriginalModulate = DayLabel.Modulate;
-
         Vector2 dayStartPos = _dayLabelOriginalPos;
         bool dayFromLeft = _rng.RandiRange(0, 1) == 0;
         dayStartPos.X += dayFromLeft ? -OffscreenDistance : OffscreenDistance;
-
         Color dayStartColor = _dayLabelOriginalModulate;
         dayStartColor.A = 0f;
-
         _dayLabelBasePos = dayStartPos;
         _dayLabelBaseModulate = dayStartColor;
 
         _titleLabelOriginalPos = TitleLabel.Position;
         _titleLabelOriginalModulate = TitleLabel.Modulate;
-
         Vector2 titleStartPos = _titleLabelOriginalPos;
         bool titleFromLeft = _rng.RandiRange(0, 1) == 0;
         titleStartPos.X += titleFromLeft ? -OffscreenDistance : OffscreenDistance;
-
         Color titleStartColor = _titleLabelOriginalModulate;
         titleStartColor.A = 0f;
-
         _titleLabelBasePos = titleStartPos;
         _titleLabelBaseModulate = titleStartColor;
+
+        _versionLabelOriginalPos = VersionLabel.Position;
+        _versionLabelOriginalModulate = VersionLabel.Modulate;
+        Vector2 versionStartPos = _versionLabelOriginalPos;
+        bool versionFromLeft = _rng.RandiRange(0, 1) == 0;
+        versionStartPos.X += versionFromLeft ? -OffscreenDistance : OffscreenDistance;
+        Color versionStartColor = _versionLabelOriginalModulate;
+        versionStartColor.A = 0f;
+        _versionLabelBasePos = versionStartPos;
+        _versionLabelBaseModulate = versionStartColor;
 
         AnimateLabelIn();
 
@@ -380,6 +392,9 @@ public partial class IntroAnimator : Node
 
         TitleLabel.Position = _titleLabelBasePos;
         TitleLabel.Modulate = _titleLabelBaseModulate;
+
+        VersionLabel.Position = _versionLabelBasePos;
+        VersionLabel.Modulate = _versionLabelBaseModulate;
     }
 
     private void TriggerFlash()
@@ -526,7 +541,7 @@ public partial class IntroAnimator : Node
         if (lastSpriteExitTween != null)
         {
             lastSpriteExitTween.Chain().TweenInterval(1.5f);
-            lastSpriteExitTween.Chain().TweenCallback(Callable.From(AnimateDayAndTitleLabelsIn));
+            lastSpriteExitTween.Chain().TweenCallback(Callable.From(AnimateLabelsIn));
         }
 
         if (TargetSprites.Count > 4)
@@ -562,21 +577,25 @@ public partial class IntroAnimator : Node
         }
     }
 
-    private void AnimateDayAndTitleLabelsIn()
+    private void AnimateLabelsIn()
     {
         Tween dayTween = CreateTween();
         dayTween.SetParallel(true);
         dayTween.SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quart);
-
         dayTween.TweenMethod(Callable.From<Vector2>(v => _dayLabelBasePos = v), _dayLabelBasePos, _dayLabelOriginalPos, 1.0f);
         dayTween.TweenMethod(Callable.From<Color>(c => _dayLabelBaseModulate = c), _dayLabelBaseModulate, _dayLabelOriginalModulate, 1.0f);
 
         Tween titleTween = CreateTween();
         titleTween.SetParallel(true);
         titleTween.SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quart);
-
         titleTween.TweenMethod(Callable.From<Vector2>(v => _titleLabelBasePos = v), _titleLabelBasePos, _titleLabelOriginalPos, 1.0f);
         titleTween.TweenMethod(Callable.From<Color>(c => _titleLabelBaseModulate = c), _titleLabelBaseModulate, _titleLabelOriginalModulate, 1.0f);
+
+        Tween versionTween = CreateTween();
+        versionTween.SetParallel(true);
+        versionTween.SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Quart);
+        versionTween.TweenMethod(Callable.From<Vector2>(v => _versionLabelBasePos = v), _versionLabelBasePos, _versionLabelOriginalPos, 1.0f);
+        versionTween.TweenMethod(Callable.From<Color>(c => _versionLabelBaseModulate = c), _versionLabelBaseModulate, _versionLabelOriginalModulate, 1.0f);
 
         if (TargetSprites.Count > 0)
         {
@@ -632,6 +651,37 @@ public partial class IntroAnimator : Node
             sprite0ExitTween.TweenMethod(Callable.From<Color>(c => baseTr0.Modulate = c), baseTr0.Modulate, endColor, 1.0f);
             sprite0ExitTween.TweenMethod(Callable.From<Vector2>(s => baseTr0.Scale = s), baseTr0.Scale, Vector2.Zero, 1.0f);
             sprite0ExitTween.TweenMethod(Callable.From<float>(r => baseTr0.Rotation = r), baseTr0.Rotation, endRotation, 1.0f);
+        }
+    }
+
+    private void ApplyVersionLabelProperties(Label targetLabel, int fontSize)
+    {
+        if (VersionLabel is Label vLabel)
+        {
+            targetLabel.Theme = vLabel.Theme;
+
+            if (vLabel.LabelSettings != null)
+            {
+                targetLabel.LabelSettings = (LabelSettings)vLabel.LabelSettings.Duplicate();
+                targetLabel.LabelSettings.FontSize = fontSize;
+            }
+            else
+            {
+                targetLabel.AddThemeFontSizeOverride("font_size", fontSize);
+
+                if (vLabel.HasThemeFontOverride("font"))
+                {
+                    targetLabel.AddThemeFontOverride("font", vLabel.GetThemeFont("font"));
+                }
+                if (vLabel.HasThemeColorOverride("font_color"))
+                {
+                    targetLabel.AddThemeColorOverride("font_color", vLabel.GetThemeColor("font_color"));
+                }
+            }
+        }
+        else
+        {
+            targetLabel.AddThemeFontSizeOverride("font_size", fontSize);
         }
     }
 
