@@ -334,9 +334,8 @@ public partial class OutroAnimator : Node
         _flashTween = CreateTween();
 
         FlashOverlay.Modulate = Colors.White;
-        float flashIntensity = _rng.RandfRange(0.7f, 1.0f);
 
-        _flashTween.TweenProperty(FlashOverlay.Material, "shader_parameter/progress", flashIntensity, 0.04f);
+        _flashTween.TweenProperty(FlashOverlay.Material, "shader_parameter/progress", 1f, 0.04f);
         _flashTween.Chain().TweenProperty(FlashOverlay.Material, "shader_parameter/progress", 0.0f, 0.25f);
 
         _baseTransforms[TargetSprites[0]].Position = new Vector2(955.5f, 277.476f);
