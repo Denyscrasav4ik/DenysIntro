@@ -7,25 +7,28 @@ public partial class IntroAnimator : Node
     public Godot.Collections.Array<Sprite2D> TargetSprites { get; set; } = new Godot.Collections.Array<Sprite2D>();
 
     [Export]
-    public AudioStreamPlayer AudioPlayer { get; set; } = default!;
+    public AudioStreamPlayer AudioPlayer { get; set; } = null!;
 
     [Export]
-    public CanvasItem FlashOverlay { get; set; } = default!;
+    public CanvasItem FlashOverlay { get; set; } = null!;
 
     [Export]
-    public Control MusicLabel { get; set; } = default!;
+    public Control MusicLabel { get; set; } = null!;
 
     [Export]
-    public Control DayLabel { get; set; } = default!;
+    public Control DayLabel { get; set; } = null!;
 
     [Export]
-    public Control TitleLabel { get; set; } = default!;
+    public Control TitleLabel { get; set; } = null!;
 
     [Export]
-    public Control VersionLabel { get; set; } = default!;
+    public Control VersionLabel { get; set; } = null!;
 
     [Export]
-    public Texture2D NewTitleTexture { get; set; } = default!;
+    public Texture2D NewTitleTexture { get; set; } = null!;
+
+    [Export]
+    public CanvasItem VolumetricLightOverlay { get; set; } = null!;
 
     [Export]
     public float OffscreenDistance { get; set; } = 1500f;
@@ -94,6 +97,11 @@ public partial class IntroAnimator : Node
         if (FlashOverlay.Material is ShaderMaterial mat)
         {
             mat.SetShaderParameter("progress", 0.0f);
+        }
+
+        if (VolumetricLightOverlay?.Material is ShaderMaterial lightMat)
+        {
+            lightMat.SetShaderParameter("blur_strength", 0.0f);
         }
 
         Tween flashDelayTween = CreateTween();
@@ -405,11 +413,14 @@ public partial class IntroAnimator : Node
         _flashTween?.Kill();
         _flashTween = CreateTween();
 
-        FlashOverlay.Modulate = Colors.White;
-        float flashIntensity = _rng.RandfRange(0.7f, 1.0f);
+        if (VolumetricLightOverlay?.Material is ShaderMaterial lightMat)
+        {
+            lightMat.SetShaderParameter("blur_strength", 0.25f);
 
-        _flashTween.TweenProperty(FlashOverlay.Material, "shader_parameter/progress", flashIntensity, 0.04f);
-        _flashTween.Chain().TweenProperty(FlashOverlay.Material, "shader_parameter/progress", 0.0f, 0.25f);
+            _flashTween.TweenProperty(lightMat, "shader_parameter/blur_strength", 0.0f, 1f)
+                       .SetEase(Tween.EaseType.Out)
+                       .SetTrans(Tween.TransitionType.Quad);
+        }
 
         Tween labelExitDelayTween = CreateTween();
         labelExitDelayTween.TweenInterval(1.0f);

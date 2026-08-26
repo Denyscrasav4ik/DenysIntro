@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://cd0s57jq7khvc" path="res://Sprites/Logo4.png" id="7_xetnn"]
 [ext_resource type="FontFile" uid="uid://dsbsbs2o1lbt8" path="res://Fonts/comic-bald.otf" id="10_xetnn"]
 [ext_resource type="Texture2D" uid="uid://b2l0qg37b01js" path="res://Sprites/ModThumbnail.png" id="11_xetnn"]
+[ext_resource type="Shader" uid="uid://cbd644tswpjja" path="res://Shaders/VolumetricLight.gdshader" id="12_mx3x7"]
 [ext_resource type="Shader" uid="uid://b5ibn4ld5whus" path="res://Shaders/DitherFade.gdshader" id="12_nfrox"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qntgk"]
@@ -89,9 +90,15 @@ shader = ExtResource("12_nfrox")
 shader_parameter/progress = 0.0
 shader_parameter/dither_size = 4.0
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qw363"]
+shader = ExtResource("12_mx3x7")
+shader_parameter/center = Vector2(0.5, 0.5)
+shader_parameter/blur_strength = 0.250000011875
+shader_parameter/samples = 20
+
 [node name="Anim" type="Node2D" unique_id=541000413]
 
-[node name="IntroAnimator" type="Node" parent="." unique_id=1759837934 node_paths=PackedStringArray("TargetSprites", "AudioPlayer", "FlashOverlay", "MusicLabel", "DayLabel", "TitleLabel", "VersionLabel")]
+[node name="IntroAnimator" type="Node" parent="." unique_id=1759837934 node_paths=PackedStringArray("TargetSprites", "AudioPlayer", "FlashOverlay", "MusicLabel", "DayLabel", "TitleLabel", "VersionLabel", "VolumetricLightOverlay")]
 script = ExtResource("3_gndc5")
 TargetSprites = [NodePath("../LogoBg"), NodePath("../Logo1"), NodePath("../Logo2"), NodePath("../Logo3"), NodePath("../Logo4")]
 AudioPlayer = NodePath("../MenuIntro")
@@ -101,6 +108,7 @@ DayLabel = NodePath("../DayLabel")
 TitleLabel = NodePath("../TitleLabel")
 VersionLabel = NodePath("../VersionLabel")
 NewTitleTexture = ExtResource("11_xetnn")
+VolumetricLightOverlay = NodePath("../VolumetricLight")
 
 [node name="ScrollingBG" type="ColorRect" parent="." unique_id=1933661188]
 z_index = -1
@@ -185,7 +193,7 @@ z_index = 1
 offset_top = 1045.0
 offset_right = 1920.0
 offset_bottom = 1081.0
-text = "(V0.0.0.0)"
+text = "(V0.0.0)"
 label_settings = SubResource("LabelSettings_nfrox")
 horizontal_alignment = 1
 
@@ -193,4 +201,10 @@ horizontal_alignment = 1
 z_index = 1
 material = SubResource("ShaderMaterial_wr1tv")
 offset_right = 1920.0
-offset_bottom = 1081.0
+offset_bottom = 1080.0
+
+[node name="VolumetricLight" type="ColorRect" parent="." unique_id=694326877]
+z_index = 1
+material = SubResource("ShaderMaterial_qw363")
+offset_right = 1920.0
+offset_bottom = 1080.0

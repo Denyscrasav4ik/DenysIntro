@@ -7,22 +7,22 @@ public partial class OutroAnimator : Node
     public Godot.Collections.Array<Sprite2D> TargetSprites { get; set; } = new Godot.Collections.Array<Sprite2D>();
 
     [Export]
-    public AudioStreamPlayer AudioPlayer { get; set; } = default!;
+    public AudioStreamPlayer AudioPlayer { get; set; } = null!;
 
     [Export]
-    public CanvasItem FlashOverlay { get; set; } = default!;
+    public CanvasItem FlashOverlay { get; set; } = null!;
 
     [Export]
-    public Control MusicLabel { get; set; } = default!;
+    public Control MusicLabel { get; set; } = null!;
 
     [Export]
-    public Sprite2D VideoBg1 { get; set; } = default!;
+    public Sprite2D VideoBg1 { get; set; } = null!;
 
     [Export]
-    public Sprite2D VideoBg2 { get; set; } = default!;
+    public Sprite2D VideoBg2 { get; set; } = null!;
 
     [Export]
-    public Sprite2D LogoBgCircle { get; set; } = default!;
+    public Sprite2D LogoBgCircle { get; set; } = null!;
 
     [Export]
     public float OffscreenDistance { get; set; } = 1500f;
@@ -93,7 +93,7 @@ public partial class OutroAnimator : Node
         _labelBaseModulate.A = 0;
 
         _videoBg1OriginalPos = VideoBg1.Position;
-        VideoBg1.Position = _videoBg1OriginalPos + new Vector2(OffscreenDistance, 0);
+        VideoBg1.Position = _videoBg1OriginalPos + new Vector2(0, OffscreenDistance);
 
         _videoBg2OriginalPos = VideoBg2.Position;
         VideoBg2.Position = _videoBg2OriginalPos + new Vector2(OffscreenDistance, 0);
@@ -339,31 +339,20 @@ public partial class OutroAnimator : Node
         _flashTween.TweenProperty(FlashOverlay.Material, "shader_parameter/progress", flashIntensity, 0.04f);
         _flashTween.Chain().TweenProperty(FlashOverlay.Material, "shader_parameter/progress", 0.0f, 0.25f);
 
-        if (TargetSprites.Count > 0)
-        {
-            _baseTransforms[TargetSprites[0]].Position = new Vector2(343.95f, 270.037f);
-            _baseTransforms[TargetSprites[0]].Scale = new Vector2(2.359f, 1.496f);
-        }
-        if (TargetSprites.Count > 1)
-        {
-            _baseTransforms[TargetSprites[1]].Position = new Vector2(254.707f, 90.544f);
-            _baseTransforms[TargetSprites[1]].Scale = new Vector2(1.015f, 1.015f);
-        }
-        if (TargetSprites.Count > 2)
-        {
-            _baseTransforms[TargetSprites[2]].Position = new Vector2(423.128f, 135.501f);
-            _baseTransforms[TargetSprites[2]].Scale = new Vector2(1.014f, 1.014f);
-        }
-        if (TargetSprites.Count > 3)
-        {
-            _baseTransforms[TargetSprites[3]].Position = new Vector2(342.608f, 233.467f);
-            _baseTransforms[TargetSprites[3]].Scale = new Vector2(0.999f, 0.999f);
-        }
-        if (TargetSprites.Count > 4)
-        {
-            _baseTransforms[TargetSprites[4]].Position = new Vector2(341.081f, 322.73f);
-            _baseTransforms[TargetSprites[4]].Scale = new Vector2(1.007f, 1.007f);
-        }
+        _baseTransforms[TargetSprites[0]].Position = new Vector2(955.5f, 277.476f);
+        _baseTransforms[TargetSprites[0]].Scale = new Vector2(2.285f, 1.45f);
+
+        _baseTransforms[TargetSprites[1]].Position = new Vector2(869.05f, 103.601f);
+        _baseTransforms[TargetSprites[1]].Scale = new Vector2(0.983f, 0.983f);
+
+        _baseTransforms[TargetSprites[2]].Position = new Vector2(1032.2f, 147.151f);
+        _baseTransforms[TargetSprites[2]].Scale = new Vector2(0.982f, 0.982f);
+
+        _baseTransforms[TargetSprites[3]].Position = new Vector2(954.2f, 242.051f);
+        _baseTransforms[TargetSprites[3]].Scale = new Vector2(0.968f, 0.968f);
+
+        _baseTransforms[TargetSprites[4]].Position = new Vector2(952.721f, 328.52f);
+        _baseTransforms[TargetSprites[4]].Scale = new Vector2(0.976f, 0.976f);
 
         TriggerImpactOnAllSprites();
         AnimateLabelPostFlash();
@@ -374,26 +363,42 @@ public partial class OutroAnimator : Node
     {
         float animDuration = 2.0f;
 
-        VideoBg1.Position = _videoBg1OriginalPos + new Vector2(OffscreenDistance, 0);
+        Vector2[] bg1Directions = new Vector2[]
+        {
+                new Vector2(-OffscreenDistance, 0),
+                new Vector2(0, -OffscreenDistance),
+                new Vector2(0, OffscreenDistance)
+        };
+        Vector2 bg1Offset = bg1Directions[_rng.RandiRange(0, bg1Directions.Length - 1)];
+
+        VideoBg1.Position = _videoBg1OriginalPos + bg1Offset;
         Tween bg1Tween = CreateTween();
         bg1Tween.TweenProperty(VideoBg1, "position", _videoBg1OriginalPos, animDuration)
                 .SetDelay(0.25f)
                 .SetEase(Tween.EaseType.Out)
                 .SetTrans(Tween.TransitionType.Back);
 
-        VideoBg2.Position = _videoBg2OriginalPos + new Vector2(OffscreenDistance, 0);
-        Tween bg2Tween = CreateTween();
-        bg2Tween.TweenProperty(VideoBg2, "position", _videoBg2OriginalPos, animDuration)
-                .SetDelay(0.50f)
-                .SetEase(Tween.EaseType.Out)
-                .SetTrans(Tween.TransitionType.Back);
-
-        LogoBgCircle.Position = _logoBgCircleOriginalPos - new Vector2(0, OffscreenDistance);
+        LogoBgCircle.Position = _logoBgCircleOriginalPos + new Vector2(0, OffscreenDistance);
         Tween logoTween = CreateTween();
         logoTween.TweenProperty(LogoBgCircle, "position", _logoBgCircleOriginalPos, animDuration)
-                 .SetDelay(0.75f)
+                 .SetDelay(0.50f)
                  .SetEase(Tween.EaseType.Out)
                  .SetTrans(Tween.TransitionType.Back);
+
+        Vector2[] bg2Directions = new Vector2[]
+        {
+                new Vector2(OffscreenDistance, 0),
+                new Vector2(0, -OffscreenDistance),
+                new Vector2(0, OffscreenDistance)
+        };
+        Vector2 bg2Offset = bg2Directions[_rng.RandiRange(0, bg2Directions.Length - 1)];
+
+        VideoBg2.Position = _videoBg2OriginalPos + bg2Offset;
+        Tween bg2Tween = CreateTween();
+        bg2Tween.TweenProperty(VideoBg2, "position", _videoBg2OriginalPos, animDuration)
+                .SetDelay(0.75f)
+                .SetEase(Tween.EaseType.Out)
+                .SetTrans(Tween.TransitionType.Back);
 
         float spinDir = _rng.RandiRange(0, 1) == 0 ? 1f : -1f;
         Tween spinTween = CreateTween().SetLoops();
