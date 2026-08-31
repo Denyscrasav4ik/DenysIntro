@@ -184,7 +184,7 @@ z_index = 1
 offset_top = 955.0
 offset_right = 1920.0
 offset_bottom = 1045.0
-text = "New Hires Pack"
+text = "No Mod"
 label_settings = SubResource("LabelSettings_xetnn")
 horizontal_alignment = 1
 
@@ -193,7 +193,7 @@ z_index = 1
 offset_top = 1045.0
 offset_right = 1920.0
 offset_bottom = 1081.0
-text = "(Update 5.5)"
+text = "(v0.0.0)"
 label_settings = SubResource("LabelSettings_nfrox")
 horizontal_alignment = 1
 
