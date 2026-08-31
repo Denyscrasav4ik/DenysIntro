@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public partial class IntroAnimator : Node
 {
     [Export]
-    public Godot.Collections.Array<Sprite2D> TargetSprites { get; set; } = new Godot.Collections.Array<Sprite2D>();
+    public Godot.Collections.Array<Sprite2D> LogoSprites { get; set; } = new Godot.Collections.Array<Sprite2D>();
 
     [Export]
     public AudioStreamPlayer AudioPlayer { get; set; } = null!;
@@ -25,7 +25,7 @@ public partial class IntroAnimator : Node
     public Control VersionLabel { get; set; } = null!;
 
     [Export]
-    public Texture2D NewTitleTexture { get; set; } = null!;
+    public Texture2D Thumbnail { get; set; } = null!;
 
     [Export]
     public CanvasItem VolumetricLightOverlay { get; set; } = null!;
@@ -145,9 +145,9 @@ public partial class IntroAnimator : Node
 
         AnimateLabelIn();
 
-        for (int i = 0; i < TargetSprites.Count; i++)
+        for (int i = 0; i < LogoSprites.Count; i++)
         {
-            var sprite = TargetSprites[i];
+            var sprite = LogoSprites[i];
 
             _originalTransforms[sprite] = new TransformData
             {
@@ -170,9 +170,9 @@ public partial class IntroAnimator : Node
             _impactOffsets[sprite] = new ImpactOffsetData();
         }
 
-        for (int i = 0; i < TargetSprites.Count; i++)
+        for (int i = 0; i < LogoSprites.Count; i++)
         {
-            var sprite = TargetSprites[i];
+            var sprite = LogoSprites[i];
 
             float startTime = i * 0.5f;
             float duration = 1.0f;
@@ -333,7 +333,7 @@ public partial class IntroAnimator : Node
     {
         if (_hasFlashed) return;
 
-        foreach (var sprite in TargetSprites)
+        foreach (var sprite in LogoSprites)
         {
             ApplyImpact(sprite);
         }
@@ -375,7 +375,7 @@ public partial class IntroAnimator : Node
 
     private void ApplyCombinedTransforms()
     {
-        foreach (var sprite in TargetSprites)
+        foreach (var sprite in LogoSprites)
         {
             var baseTr = _baseTransforms[sprite];
             var offset = _impactOffsets[sprite];
@@ -431,19 +431,25 @@ public partial class IntroAnimator : Node
 
     private void AnimateSpritesAfterFlash()
     {
-        if (TargetSprites.Count > 0)
+        if (LogoSprites.Count > 0)
         {
-            Sprite2D sprite0 = TargetSprites[0];
+            Sprite2D sprite0 = LogoSprites[0];
             var baseTr0 = _baseTransforms[sprite0];
 
             Vector2 viewportSize = GetViewport().GetVisibleRect().Size;
             Vector2 screenCenter = viewportSize / 2f;
 
             Vector2 targetScale = baseTr0.Scale;
-            if (sprite0.Texture != null)
+            if (sprite0.Texture != null && Thumbnail != null)
             {
                 Vector2 texSize = sprite0.Texture.GetSize();
-                targetScale = new Vector2(1280f / texSize.X, 720f / texSize.Y);
+                Vector2 thumbSize = Thumbnail.GetSize();
+
+                float aspectRatio = thumbSize.X / thumbSize.Y;
+                float targetHeight = 720f;
+                float targetWidth = targetHeight * aspectRatio;
+
+                targetScale = new Vector2(targetWidth / texSize.X, targetHeight / texSize.Y);
             }
 
             Tween tween0 = CreateTween();
@@ -458,9 +464,9 @@ public partial class IntroAnimator : Node
 
         for (int i = 1; i <= 3; i++)
         {
-            if (i >= TargetSprites.Count) break;
+            if (i >= LogoSprites.Count) break;
 
-            Sprite2D sprite = TargetSprites[i];
+            Sprite2D sprite = LogoSprites[i];
             var baseTr = _baseTransforms[sprite];
 
             Vector2 targetInPos = Vector2.Zero;
@@ -555,9 +561,9 @@ public partial class IntroAnimator : Node
             lastSpriteExitTween.Chain().TweenCallback(Callable.From(AnimateLabelsIn));
         }
 
-        if (TargetSprites.Count > 4)
+        if (LogoSprites.Count > 4)
         {
-            Sprite2D sprite4 = TargetSprites[4];
+            Sprite2D sprite4 = LogoSprites[4];
             var baseTr4 = _baseTransforms[sprite4];
 
             Vector2 targetOutPos = baseTr4.Position;
@@ -608,21 +614,22 @@ public partial class IntroAnimator : Node
         versionTween.TweenMethod(Callable.From<Vector2>(v => _versionLabelBasePos = v), _versionLabelBasePos, _versionLabelOriginalPos, 1.0f);
         versionTween.TweenMethod(Callable.From<Color>(c => _versionLabelBaseModulate = c), _versionLabelBaseModulate, _versionLabelOriginalModulate, 1.0f);
 
-        if (TargetSprites.Count > 0)
+        if (LogoSprites.Count > 0)
         {
-            var sprite0 = TargetSprites[0];
+            var sprite0 = LogoSprites[0];
             var baseTr0 = _baseTransforms[sprite0];
 
             Sprite2D bgSprite = new Sprite2D();
-            bgSprite.Texture = NewTitleTexture;
+            bgSprite.Texture = Thumbnail;
             bgSprite.Material = sprite0.Material;
             bgSprite.Position = baseTr0.Position;
             bgSprite.Rotation = baseTr0.Rotation;
 
-            Vector2 targetScale = baseTr0.Scale;
-            Vector2 texSize = NewTitleTexture.GetSize();
-            targetScale = new Vector2(1280f / texSize.X, 720f / texSize.Y);
-            bgSprite.Scale = targetScale;
+            Vector2 thumbSize = Thumbnail.GetSize();
+            float aspectRatio = thumbSize.X / thumbSize.Y;
+            float targetHeight = 720f;
+            float targetWidth = targetHeight * aspectRatio;
+            bgSprite.Scale = new Vector2(targetWidth / thumbSize.X, targetHeight / thumbSize.Y);
 
             Color bgStartColor = baseTr0.Modulate;
             bgStartColor.A = 0f;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public partial class OutroAnimator : Node
 {
     [Export]
-    public Godot.Collections.Array<Sprite2D> TargetSprites { get; set; } = new Godot.Collections.Array<Sprite2D>();
+    public Godot.Collections.Array<Sprite2D> LogoSprites { get; set; } = new Godot.Collections.Array<Sprite2D>();
 
     [Export]
     public AudioStreamPlayer AudioPlayer { get; set; } = null!;
@@ -101,9 +101,9 @@ public partial class OutroAnimator : Node
         _logoBgCircleOriginalPos = LogoBgCircle.Position;
         LogoBgCircle.Position = _logoBgCircleOriginalPos - new Vector2(0, OffscreenDistance);
 
-        for (int i = 0; i < TargetSprites.Count; i++)
+        for (int i = 0; i < LogoSprites.Count; i++)
         {
-            var sprite = TargetSprites[i];
+            var sprite = LogoSprites[i];
 
             _originalTransforms[sprite] = new TransformData
             {
@@ -126,9 +126,9 @@ public partial class OutroAnimator : Node
             _impactOffsets[sprite] = new ImpactOffsetData();
         }
 
-        for (int i = 0; i < TargetSprites.Count; i++)
+        for (int i = 0; i < LogoSprites.Count; i++)
         {
-            var sprite = TargetSprites[i];
+            var sprite = LogoSprites[i];
 
             float startTime = i * 0.5f;
             float duration = 1.0f;
@@ -264,7 +264,7 @@ public partial class OutroAnimator : Node
 
     private void TriggerImpactOnAllSprites()
     {
-        foreach (var sprite in TargetSprites)
+        foreach (var sprite in LogoSprites)
         {
             ApplyImpact(sprite);
         }
@@ -304,7 +304,7 @@ public partial class OutroAnimator : Node
 
     private void ApplyCombinedTransforms()
     {
-        foreach (var sprite in TargetSprites)
+        foreach (var sprite in LogoSprites)
         {
             var baseTr = _baseTransforms[sprite];
             var offset = _impactOffsets[sprite];
@@ -338,20 +338,20 @@ public partial class OutroAnimator : Node
         _flashTween.TweenProperty(FlashOverlay.Material, "shader_parameter/progress", 1f, 0.04f);
         _flashTween.Chain().TweenProperty(FlashOverlay.Material, "shader_parameter/progress", 0.0f, 0.25f);
 
-        _baseTransforms[TargetSprites[0]].Position = new Vector2(955.5f, 277.476f);
-        _baseTransforms[TargetSprites[0]].Scale = new Vector2(2.285f, 1.45f);
+        _baseTransforms[LogoSprites[0]].Position = new Vector2(955.5f, 277.476f);
+        _baseTransforms[LogoSprites[0]].Scale = new Vector2(2.285f, 1.45f);
 
-        _baseTransforms[TargetSprites[1]].Position = new Vector2(869.05f, 103.601f);
-        _baseTransforms[TargetSprites[1]].Scale = new Vector2(0.983f, 0.983f);
+        _baseTransforms[LogoSprites[1]].Position = new Vector2(869.05f, 103.601f);
+        _baseTransforms[LogoSprites[1]].Scale = new Vector2(0.983f, 0.983f);
 
-        _baseTransforms[TargetSprites[2]].Position = new Vector2(1032.2f, 147.151f);
-        _baseTransforms[TargetSprites[2]].Scale = new Vector2(0.982f, 0.982f);
+        _baseTransforms[LogoSprites[2]].Position = new Vector2(1032.2f, 147.151f);
+        _baseTransforms[LogoSprites[2]].Scale = new Vector2(0.982f, 0.982f);
 
-        _baseTransforms[TargetSprites[3]].Position = new Vector2(954.2f, 242.051f);
-        _baseTransforms[TargetSprites[3]].Scale = new Vector2(0.968f, 0.968f);
+        _baseTransforms[LogoSprites[3]].Position = new Vector2(954.2f, 242.051f);
+        _baseTransforms[LogoSprites[3]].Scale = new Vector2(0.968f, 0.968f);
 
-        _baseTransforms[TargetSprites[4]].Position = new Vector2(952.721f, 328.52f);
-        _baseTransforms[TargetSprites[4]].Scale = new Vector2(0.976f, 0.976f);
+        _baseTransforms[LogoSprites[4]].Position = new Vector2(952.721f, 328.52f);
+        _baseTransforms[LogoSprites[4]].Scale = new Vector2(0.976f, 0.976f);
 
         TriggerImpactOnAllSprites();
         AnimateLabelPostFlash();

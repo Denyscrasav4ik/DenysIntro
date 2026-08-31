@@ -79,9 +79,9 @@ shader_parameter/dither_size = 4.0
 
 [node name="Anim" type="Node2D" unique_id=541000413]
 
-[node name="OutroAnimator" type="Node" parent="." unique_id=1759837934 node_paths=PackedStringArray("TargetSprites", "AudioPlayer", "FlashOverlay", "MusicLabel", "VideoBg1", "VideoBg2", "LogoBgCircle")]
+[node name="OutroAnimator" type="Node" parent="." unique_id=1759837934 node_paths=PackedStringArray("LogoSprites", "AudioPlayer", "FlashOverlay", "MusicLabel", "VideoBg1", "VideoBg2", "LogoBgCircle")]
 script = ExtResource("3_owav6")
-TargetSprites = [NodePath("../LogoBg"), NodePath("../Logo1"), NodePath("../Logo2"), NodePath("../Logo3"), NodePath("../Logo4")]
+LogoSprites = [NodePath("../LogoBg"), NodePath("../Logo1"), NodePath("../Logo2"), NodePath("../Logo3"), NodePath("../Logo4")]
 AudioPlayer = NodePath("../MenuOutro")
 FlashOverlay = NodePath("../WhiteFlash")
 MusicLabel = NodePath("../MusicLabel")
