@@ -7,28 +7,28 @@ public partial class IntroAnimator : Node
     public Godot.Collections.Array<Sprite2D> LogoSprites { get; set; } = new Godot.Collections.Array<Sprite2D>();
 
     [Export]
-    public AudioStreamPlayer AudioPlayer { get; set; } = null!;
+    public AudioStreamPlayer AudioPlayer { get; set; }
 
     [Export]
-    public CanvasItem FlashOverlay { get; set; } = null!;
+    public CanvasItem FlashOverlay { get; set; }
 
     [Export]
-    public Control MusicLabel { get; set; } = null!;
+    public Control MusicLabel { get; set; }
 
     [Export]
-    public Control DayLabel { get; set; } = null!;
+    public Control DayLabel { get; set; }
 
     [Export]
-    public Control TitleLabel { get; set; } = null!;
+    public Control TitleLabel { get; set; }
 
     [Export]
-    public Control VersionLabel { get; set; } = null!;
+    public Control VersionLabel { get; set; }
 
     [Export]
-    public Texture2D Thumbnail { get; set; } = null!;
+    public Texture2D Thumbnail { get; set; }
 
     [Export]
-    public CanvasItem VolumetricLightOverlay { get; set; } = null!;
+    public CanvasItem VolumetricLightOverlay { get; set; }
 
     [Export]
     public float OffscreenDistance { get; set; } = 1500f;
@@ -82,7 +82,7 @@ public partial class IntroAnimator : Node
     private Color _versionLabelOriginalModulate;
     private Color _versionLabelBaseModulate;
 
-    private Tween? _flashTween;
+    private Tween _flashTween;
     private RandomNumberGenerator _rng = new();
 
     private int _audioBusIndex = 0;
@@ -460,7 +460,7 @@ public partial class IntroAnimator : Node
             tween0.TweenMethod(Callable.From<Vector2>(s => baseTr0.Scale = s), baseTr0.Scale, targetScale, 1.0f);
         }
 
-        Tween? lastSpriteExitTween = null;
+        Tween lastSpriteExitTween = null;
 
         for (int i = 1; i <= 3; i++)
         {

@@ -6,7 +6,7 @@ public partial class AudioVisualizer : Control
     public AudioStreamPlayer AudioPlayer { get; set; } = default!;
 
     private int _busIndex = 0;
-    private AudioEffectSpectrumAnalyzerInstance? _spectrumInstance;
+    private AudioEffectSpectrumAnalyzerInstance _spectrumInstance;
     private const int BarCount = 128;
     private float[] _barHeights = new float[BarCount];
     private RandomNumberGenerator _rng = new();

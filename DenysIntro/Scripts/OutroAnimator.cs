@@ -7,22 +7,22 @@ public partial class OutroAnimator : Node
     public Godot.Collections.Array<Sprite2D> LogoSprites { get; set; } = new Godot.Collections.Array<Sprite2D>();
 
     [Export]
-    public AudioStreamPlayer AudioPlayer { get; set; } = null!;
+    public AudioStreamPlayer AudioPlayer { get; set; }
 
     [Export]
-    public CanvasItem FlashOverlay { get; set; } = null!;
+    public CanvasItem FlashOverlay { get; set; }
 
     [Export]
-    public Control MusicLabel { get; set; } = null!;
+    public Control MusicLabel { get; set; }
 
     [Export]
-    public Sprite2D VideoBg1 { get; set; } = null!;
+    public Sprite2D VideoBg1 { get; set; }
 
     [Export]
-    public Sprite2D VideoBg2 { get; set; } = null!;
+    public Sprite2D VideoBg2 { get; set; }
 
     [Export]
-    public Sprite2D LogoBgCircle { get; set; } = null!;
+    public Sprite2D LogoBgCircle { get; set; }
 
     [Export]
     public float OffscreenDistance { get; set; } = 1500f;
@@ -64,7 +64,7 @@ public partial class OutroAnimator : Node
     private Vector2 _videoBg2OriginalPos;
     private Vector2 _logoBgCircleOriginalPos;
 
-    private Tween? _flashTween;
+    private Tween _flashTween;
     private RandomNumberGenerator _rng = new();
 
     private int _audioBusIndex = 0;
